@@ -16,6 +16,27 @@ public class Customer {
    public String getName (){
       return _name;
    }
+
+  private double amountFor(Rental each){
+    double thisAmount = 0;
+      //determine amounts for each line
+      switch (each.getMovie().getPriceCode()) {
+        case Movie.REGULAR:
+          thisAmount += 2;
+          if (each.getDaysRented() > 2)
+            thisAmount += (each.getDaysRented() - 2) * 1.5;
+            break;
+        case Movie.NEW_RELEASE:
+          thisAmount += each.getDaysRented() * 3;
+          break;
+        case Movie.CHILDRENS:
+          thisAmount += 1.5;
+          if (each.getDaysRented() > 3)
+            thisAmount += (each.getDaysRented() - 3) * 1.5;
+            break;
+    }
+    return thisAmount;
+  }
   
   public String statement() {
      double totalAmount = 0;
@@ -23,26 +44,7 @@ public class Customer {
      Enumeration rentals = _rentals.elements();
      String result = "Rental Record for " + getName() + "\n";
      while (rentals.hasMoreElements()) {
-        double thisAmount = 0;
         Rental each = (Rental) rentals.nextElement();
-
-        //determine amounts for each line
-        switch (each.getMovie().getPriceCode()) {
-           case Movie.REGULAR:
-              thisAmount += 2;
-              if (each.getDaysRented() > 2)
-                 thisAmount += (each.getDaysRented() - 2) * 1.5;
-              break;
-           case Movie.NEW_RELEASE:
-              thisAmount += each.getDaysRented() * 3;
-              break;
-           case Movie.CHILDRENS:
-              thisAmount += 1.5;
-              if (each.getDaysRented() > 3)
-                 thisAmount += (each.getDaysRented() - 3) * 1.5;
-               break;
-        }
-
         // add frequent renter points
         frequentRenterPoints ++;
         // add bonus for a two day new release rental
@@ -50,6 +52,7 @@ public class Customer {
             each.getDaysRented() > 1) frequentRenterPoints ++;
 
         //show figures for this rental
+        double thisAmount = amountFor(each); 
         result += "\t" + each.getMovie().getTitle()+ "\t" +
             String.valueOf(thisAmount) + "\n";
         totalAmount += thisAmount;
