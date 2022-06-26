@@ -3,20 +3,33 @@ import java.util.Enumeration;
 public class TextStatement extends Statement {
     public String value(Customer aCustomer) {
         Enumeration rentals = aCustomer.getRentals();
-        String result = "Rental Record for " + aCustomer.getName() +
-                "\n";
+        String result = getHeaderText(aCustomer.getName());
         while (rentals.hasMoreElements()) {
             Rental each = (Rental) rentals.nextElement();
             // show figures for this rental
-            result += "\t" + each.getMovie().getTitle() + "\t" +
-                    String.valueOf(each.getCharge()) + "\n";
+            result += getRentalText(each);
         }
         // add footer lines
+        result += getFooterText(aCustomer);
+        return result;
+    }
+
+    private String getHeaderText(String customerName) {
+        return "Rental Record for " + customerName + "\n";
+    }
+
+    private String getRentalText(Rental rental) {
+        return "\t" + rental.getMovie().getTitle() + "\t" +
+                String.valueOf(rental.getCharge()) + "\n";
+    }
+
+    private String getFooterText(Customer customer) {
+        String result = "";
         result += "Amount owed is " +
-                String.valueOf(aCustomer.getTotalCharge()) + "\n";
+                String.valueOf(customer.getTotalCharge()) + "\n";
         result += "You earned " +
-                String.valueOf(aCustomer.getTotalFrequentRenterPoints()) +
+                String.valueOf(customer.getTotalFrequentRenterPoints()) +
                 " frequent renter points";
         return result;
     }
-} 
+}
